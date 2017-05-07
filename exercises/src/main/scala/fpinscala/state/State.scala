@@ -75,6 +75,9 @@ object RNG {
     ((d1, d2, d3), r3)
   }
 
+  def boolean(rng: RNG): (Boolean, RNG) =
+    rng.nextInt match { case (n, rng2) => (n % 2 == 0, rng2) }
+
   def ints(count: Int)(rng: RNG): (List[Int], RNG) = {
     (0 until count).foldLeft[(List[Int], RNG)]((Nil, rng)) { (acc, _) =>
       val (i, r) = acc._2.nextInt
