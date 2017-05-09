@@ -223,7 +223,7 @@ object Gen {
     run(boolProp)
 
     //s.toSet.takeWhile(f).forall(x => !s.toSet.dropWhile(f).exists(x))
-    s.takeWhile(f) ++ s.dropWhile(f) == s
+    //s.takeWhile(f) ++ s.dropWhile(f) == s
 
   }
 }
