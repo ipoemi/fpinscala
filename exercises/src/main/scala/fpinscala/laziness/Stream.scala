@@ -84,6 +84,9 @@ trait Stream[+A] {
       case (Cons(h1, t1), Cons(h2, t2)) => Some((f(h1(), h2()), (t1(), t2())))
     }
 
+  def zip[B](s2: Stream[B]): Stream[(A,B)] =
+    zipWith(s2)((_,_))
+
   def zipAll[B](xs: Stream[B]): Stream[(Option[A], Option[B])] =
     unfold[(Option[A], Option[B]), (Stream[A], Stream[B])]((this, xs)) {
       case (Empty, Empty) => None
