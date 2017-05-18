@@ -79,9 +79,13 @@ trait Stream[+A] {
 
   def zipWith[B, C](xs: Stream[B])(f: (A, B) => C): Stream[C] =
     unfold[C, (Stream[A], Stream[B])]((this, xs)) {
+      /*
       case (_, Empty) => None
       case (Empty, _) => None
       case (Cons(h1, t1), Cons(h2, t2)) => Some((f(h1(), h2()), (t1(), t2())))
+      */
+      case (Cons(h1, t1), Cons(h2, t2)) => Some((f(h1(), h2()), (t1(), t2())))
+      case _ => None
     }
 
   def zip[B](s2: Stream[B]): Stream[(A,B)] =
@@ -89,16 +93,17 @@ trait Stream[+A] {
 
   def zipAll[B](xs: Stream[B]): Stream[(Option[A], Option[B])] =
     unfold[(Option[A], Option[B]), (Stream[A], Stream[B])]((this, xs)) {
-      case (Empty, Empty) => None
       case (Cons(h, t), Empty) => Some(((Some(h()), None), (t(), Empty)))
       case (Empty, Cons(h, t)) => Some(((None, Some(h())), (Empty, t())))
       case (Cons(h1, t1), Cons(h2, t2)) => Some(((Some(h1()), Some(h2())), (t1(), t2())))
+      case _ => None
     }
 
   def startsWith[B](s: Stream[B]): Boolean = (this, s) match {
     case (Empty, _) => false
     case (_, Empty) => true
     case (Cons(_, t1), Cons(_, t2)) => t1().startsWith(t2())
+    case _ => true
   }
 
   def startsWith2[B](s: Stream[B]): Boolean =
@@ -189,6 +194,9 @@ object Stream {
 
   val ones2: Stream[Int] = unfold(1)(_ => Some(1, 1))
 
+}
+
+object StreamMain {
   def main(args: Array[String]): Unit = {
     println(Stream(1, 2, 3).tails.toList.map(_.toList))
     println(Stream(1, 2, 3).scanRight(0)(_ + _).toList)

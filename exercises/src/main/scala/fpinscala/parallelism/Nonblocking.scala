@@ -46,7 +46,7 @@ object Nonblocking {
       * This will come in handy in Chapter 13.
       */
     def async[A](f: (A => Unit) => Unit): Par[A] = es => new Future[A] {
-      def apply(k: A => Unit) = f(k)
+      def apply(k: A => Unit): Unit = f(k)
     }
 
     /**
@@ -151,6 +151,12 @@ object Nonblocking {
         }
     }
 
+    def parMap[A, B](as: List[A])(f: A => B): Par[List[B]] =
+      sequence(as.map(asyncF(f)))
+
+    def parMap[A, B](as: IndexedSeq[A])(f: A => B): Par[IndexedSeq[B]] =
+      sequenceBalanced(as.map(asyncF(f)))
+
     def choiceViaChoiceN[A](a: Par[Boolean])(ifTrue: Par[A], ifFalse: Par[A]): Par[A] =
       choiceN(a.map(b => if (b) 0 else 1))(List(ifTrue, ifFalse))
 
@@ -200,6 +206,8 @@ object Nonblocking {
 
     // infix versions of `map`, `map2`
     class ParOps[A](p: Par[A]) {
+      def flatMap[B](f: A => Par[B]) = Par.flatMap(p)(f)
+
       def map[B](f: A => B): Par[B] = Par.map(p)(f)
 
       def map2[B, C](b: Par[B])(f: (A, B) => C): Par[C] = Par.map2(p, b)(f)

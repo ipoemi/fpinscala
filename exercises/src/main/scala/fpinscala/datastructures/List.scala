@@ -25,7 +25,7 @@ object List { // `List` companion object. Contains functions for creating and wo
     if (as.isEmpty) Nil
     else Cons(as.head, apply(as.tail: _*))
 
-  val x = List(1, 2, 3, 4, 5) match {
+  val s: Int = List(1, 2, 3, 4, 5) match {
     case Cons(x, Cons(2, Cons(4, _))) => x
     case Nil => 42
     case Cons(x, Cons(y, Cons(3, Cons(4, _)))) => x + y
@@ -45,10 +45,10 @@ object List { // `List` companion object. Contains functions for creating and wo
       case Cons(x, xs) => f(x, foldRight(xs, z)(f))
     }
 
-  def sum2(ns: List[Int]) =
+  def sum2(ns: List[Int]): Int =
     foldRight(ns, 0)((x, y) => x + y)
 
-  def product2(ns: List[Double]) =
+  def product2(ns: List[Double]): Double =
     foldRight(ns, 1.0)(_ * _) // `_ * _` is more concise notation for `(x,y) => x * y`; see sidebar
 
 
@@ -75,7 +75,8 @@ object List { // `List` companion object. Contains functions for creating and wo
   }
 
   def init[A](l: List[A]): List[A] = l match {
-    case Cons(h, Nil) => Nil
+    case Nil => Nil
+    case Cons(_, Nil) => Nil
     case Cons(h, t) => Cons(h, init(t))
   }
 
@@ -87,13 +88,13 @@ object List { // `List` companion object. Contains functions for creating and wo
     case Cons(h, t) => foldLeft(t, f(z, h))(f)
   }
 
-  def sum3(ns: List[Int]) =
+  def sum3(ns: List[Int]): Int =
     foldLeft(ns, 0)(_ + _)
 
-  def product3(ns: List[Double]) =
+  def product3(ns: List[Double]): Double =
     foldLeft(ns, 1.0)(_ * _)
 
-  def length3[A](ns: List[A]) =
+  def length3[A](ns: List[A]): Int =
     foldLeft(ns, 0)((acc, _) => acc + 1)
 
   def reverse[A](ns: List[A]): List[A] = foldLeft(ns, List[A]())((acc, y) => Cons(y, acc))
@@ -152,11 +153,16 @@ object List { // `List` companion object. Contains functions for creating and wo
     def loop(sup: List[A]): Boolean = sup match {
       case Nil => false
       case _ if aux(sup, sub) => true
-      case Cons(h, t) => loop(t)
+      case Cons(_, t) => loop(t)
     }
 
     loop(sup)
   }
+
+}
+
+object ListMain {
+  import List._
 
   def main(args: Array[String]): Unit = {
     println(hasSubsequence(List(1, 2, 3), List(3, 1)))

@@ -44,9 +44,13 @@ object JSON {
     whitespace *> value
   }
 
+}
+
+object Main {
   def main(args: Array[String]): Unit = {
     import MyParser._
     import MyParserType.MyParser
+    import JSON._
     val json: MyParser[JSON] = jsonParser(MyParser)
 
     val test1 = surround("[", "]")("*" sep ",")

@@ -41,6 +41,10 @@ object Tree {
   def depth2[A](tree: Tree[A]): Int = fold(tree)(_ => 0)((l, r) => 1 + (l max r))
 
   def map2[A, B](tree: Tree[A])(f: A => B): Tree[B] = fold(tree)(x => Leaf(f(x)): Tree[B])((l, r) => Branch(l, r))
+}
+
+object TreeMain {
+  import Tree._
 
   def main(args: Array[String]): Unit = {
     val aTree = Branch(Branch(Leaf(1), Leaf(2)), Leaf(3))
@@ -48,6 +52,4 @@ object Tree {
     println(fold(aTree)(Leaf(_): Tree[_])(Branch(_, _)))
     println(map2(aTree)(_ + 1))
   }
-
-
 }
